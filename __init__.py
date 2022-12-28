@@ -13,9 +13,9 @@ from .views.ranking import MXRRanking
 import logging
 
 class MxRandomApp(AppConfig):
-	game_dependencies = ['trackmania', 'shootmania']
+	game_dependencies = ['trackmania', 'shootmania', 'trackmania_next',]
 	mode_dependencies = ['TimeAttack']
-	app_dependencies = ['core.maniaplanet']
+	app_dependencies = ['core.maniaplanet', 'core.trackmania']
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.api = None
@@ -49,7 +49,7 @@ class MxRandomApp(AppConfig):
 		await super().on_destroy()
 
 	async def get_next_map(self):
-		mxmap = json.loads(requests.get(f"https://tm.mania.exchange/mapsearch2/search?api=on&random=1&tpack=TMCanyon&tpack=TMValley&tpack=TMStadium&tpack=TMLagoon&tpack=TMAll").text)["results"][0]
+		mxmap = json.loads(requests.get(f"https://trackmania.exchange/mapsearch2/search?api=on&random=1").text)["results"][0]
 		mapid = mxmap["TrackID"]
 		mapname = mxmap["GbxMapName"]
 		mapuid = mxmap["TrackUID"]
@@ -68,7 +68,7 @@ class MxRandomApp(AppConfig):
 			}
 		)
 
-		resp = await session.get(f"https://tm.mania-exchange.com/maps/download/{mapid}")
+		resp = await session.get(f"https://trackmania.exchange/maps/download/{mapid}")
 		
 		map_filename = os.path.join('PyPlanet-MX', '{}-{}.Map.Gbx'.format(
 					self.instance.game.game.upper(), mapid
