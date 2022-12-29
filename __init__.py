@@ -189,7 +189,7 @@ class MxRandomApp(AppConfig):
             t.append((i.name, i.points))
         return t
 
-    async def resetranks(self, **kwargs):
+    async def resetranks(self, player, data, **kwargs):
         instances = await UserPoints.execute(UserPoints.select().where(UserPoints.points > 1))
         for i in instances:
           i.points = 0
