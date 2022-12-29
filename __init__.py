@@ -194,7 +194,7 @@ class MxRandomApp(AppConfig):
         for i in instances:
           i.points = 0
           await i.save()
-        await self.instance.chat(f"$Admin $o$s$00f{player.nickname} $z resetted all points to 0.")
+        await self.instance.chat(f"$s$oAdmin $00f{player.nickname} $z resetted all points to 0.")
 
     async def set_difficulty(self, player, data, **kwargs):
         try:
