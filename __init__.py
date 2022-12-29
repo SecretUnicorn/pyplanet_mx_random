@@ -164,6 +164,8 @@ class MxRandomApp(AppConfig):
     async def set_difficulty(self, player, data, **kwargs):
         try:
           dif = data.difficulty
+          if dif is None:
+            raise Exception()
           await self.instance.chat(f"$bMX Difficulty has been set to {data.difficulty} by Admin {player.nickname}")
         except:
           await self.instance.chat(f"$bMX Difficulty is currently set to {data.difficulty}", player)
