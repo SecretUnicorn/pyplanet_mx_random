@@ -1,3 +1,4 @@
+from peewee import *
 name_field = CharField(default='unknown name')
 
 from ..models import UserPoints
