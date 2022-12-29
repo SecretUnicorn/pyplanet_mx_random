@@ -11,6 +11,12 @@ class UserPoints(TimedModel):
         help_text="User login"
     )
 
+    name = CharField(
+        max_length=255,
+        null=False,
+        help_text="Username"
+    )
+
     points = FloatField(
         default=0.0, help_text="Points associated with login"
     )

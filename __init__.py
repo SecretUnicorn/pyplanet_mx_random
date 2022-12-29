@@ -26,8 +26,15 @@ class MxRandomApp(AppConfig):
         self.isFinished = False
         self.pointsToGive = 12
         self.players_points = dict()
+        self.player_translations = dict()
         self.currentMapStartTime = 0
         self.view = MXRButtons(self)
+        self.colors = {
+          "AUTHOR": "$060",
+          "GOLD": "$C90",
+          "SILVER": "$699",
+          "BRONZE": "$F93"
+        }
 
     async def on_init(self):
         await super().on_init()
@@ -127,6 +134,7 @@ class MxRandomApp(AppConfig):
             if race_time <= compare_time:
                 self.isFinished = True
                 self.players_points[player.login] = self.pointsToGive
+                self.player_translations[player.login] = player.nickname
                 await self.instance.chat(f"$0F0$s$o{player.nickname}$z$s has beaten this map! $i$F00Starting countdown")
                 mode_settings = await self.instance.mode_manager.get_settings()
                 try:
@@ -141,14 +149,16 @@ class MxRandomApp(AppConfig):
                     await self.instance.chat(f"$f80$s$o{player.nickname}$z$s$ff0 snatched some points! GJ :)")
                     self.pointsToGive /= 2
                     self.players_points[player.login] = self.pointsToGive
+                    self.player_translations[player.login] = player.nickname
 
     async def on_end(self, **kwargs):
         for key in self.players_points:
             try:
                 instance = await UserPoints.get(login=key)
             except:
-                instance = UserPoints(login=key, points=0.0)
+                instance = UserPoints(login=key, points=0.0, name=self.player_translations[key])
             instance.points += self.players_points[key]
+            instance.name = self.player_translations[key]
             await instance.save()
 
     async def map_start(self, **kwargs):
@@ -182,7 +192,7 @@ class MxRandomApp(AppConfig):
           if dif is None:
             raise Exception()
           await self.setting_difficulty.set_value(dif)
-          await self.instance.chat(f"$b$603MX Difficulty$z has been set to $3F3$s$o{dif}$z by Admin {player.nickname}")
+          await self.instance.chat(f"$b$603MX Difficulty$z has been set to {self.colors[dif]}$s$o{dif}$z by Admin {player.nickname}")
         except:
           dif = await self.setting_difficulty.get_value()
-          await self.instance.chat(f"$b$603MX Difficulty$z is currently set to $3F3$s$o{dif}$z. Call this with /mxdiff $s$39F<AUTHOR | GOLD | SILVER | BRONZE>$z to set the difficulty", player)
+          await self.instance.chat(f'$b$603MX Difficulty$z is currently set to {self.colors[dif]}$s$o{dif}$z. Call this with /mxdiff $s<{self.colors["AUTHOR"]}AUTHOR$z | {self.colors["GOLD"]}GOLD$z | {self.colors["SILVER"]}SILVER$z |{self.colors["BRONZE"]} BRONZE>$z to set the difficulty', player)
