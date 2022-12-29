@@ -51,6 +51,7 @@ class MxRandomApp(AppConfig):
         await self.instance.command_manager.register(Command(command='mxdiff', target=self.set_difficulty, admin=True, description='Set the medal that needs to be reaced').add_param(name="difficulty", required=False, help="AUTHOR|GOLD|SILVER|BRONZE"))
         await self.instance.command_manager.register(Command(command='mxrhelp', target=self.randhelp, admin=False, description='Get some information about the MX Random plugin'))
         await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=False, description='Get current MX Random ranking'))
+        await self.instance.command_manager.register(Command(command='mxresetranks', target=self.resetranks, admin=True, description='Resets all points to zero'))
         self.setting_difficulty = Setting('mxdifficulty', 'MX Difficutly', Setting.CAT_GENERAL, type=str, description='Minimum medal to be reaced', choices=["AUTHOR", "GOLD", "SILVER", "BRONZE"], default="AUTHOR")
         await self.context.setting.register(
             self.setting_difficulty
@@ -170,6 +171,8 @@ class MxRandomApp(AppConfig):
         mode_settings["S_TimeLimit"] = -1
         await self.instance.mode_manager.update_settings(mode_settings)
         await self.get_next_map()
+        dif = await self.setting_difficulty.get_value()
+        await self.instance.chat(f"Random Map Challenge | Current Target: {self.colors[dif]}$s$o{dif}$z May the best win!")
         await self.view.display()
 
     async def randhelp(self, player, **kwargs):
@@ -185,6 +188,10 @@ class MxRandomApp(AppConfig):
         for i in e:
             t.append((i.name, i.points))
         return t
+
+    async def resetranks(self, **kwargs):
+        await UserPoints.update(points=0).execute()
+        await self.instance.chat(f"$Admin $o$s$00f{player.nickname} $z resetted all points to 0.")
 
     async def set_difficulty(self, player, data, **kwargs):
         try:
