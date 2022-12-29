@@ -1,4 +1,6 @@
 from peewee import *
+from playhouse.migrate import migrate, SchemaMigrator
+
 name_field = CharField(default='unknown name')
 
 from ..models import UserPoints
