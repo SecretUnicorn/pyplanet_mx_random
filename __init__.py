@@ -172,7 +172,7 @@ class MxRandomApp(AppConfig):
         await self.instance.mode_manager.update_settings(mode_settings)
         await self.get_next_map()
         dif = await self.setting_difficulty.get_value()
-        await self.instance.chat(f"Random Map Challenge | Current Target: {self.colors[dif]}{dif}$z May the best win!")
+        await self.instance.chat(f"$b$603Random Map Challenge$z | Current Target: {self.colors[dif]}$s{dif}$z May the best win!")
         await self.view.display()
 
     async def randhelp(self, player, **kwargs):
