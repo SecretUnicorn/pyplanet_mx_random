@@ -52,7 +52,7 @@ class MxRandomApp(AppConfig):
         await self.instance.command_manager.register(Command(command='mxrhelp', target=self.randhelp, admin=False, description='Get some information about the MX Random plugin'))
         await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=False, description='Get current MX Random ranking'))
         await self.instance.command_manager.register(Command(command='mxresetranks', target=self.resetranks, admin=True, description='Resets all points to zero'))
-        await self.instance.command_manager.register(Command(command='mxtoggle', target=self.resetranks, admin=True, description='Toggles the plugin'))
+        await self.instance.command_manager.register(Command(command='mxtoggle', target=self.toggle, admin=True, description='Toggles the plugin'))
         self.setting_difficulty = Setting('mxdifficulty', 'MX Difficutly', Setting.CAT_GENERAL, type=str, description='Minimum medal to be reaced', choices=["AUTHOR", "GOLD", "SILVER", "BRONZE"], default="AUTHOR")
         await self.context.setting.register(
             self.setting_difficulty
