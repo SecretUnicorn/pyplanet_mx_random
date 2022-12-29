@@ -190,7 +190,7 @@ class MxRandomApp(AppConfig):
         return t
 
     async def resetranks(self, **kwargs):
-        instances = await Model.execute(Model.select().where(Model.column == 1))
+        instances = await UserPoints.execute(UserPoints.select().where(UserPoints.points > 1))
         for i in instances:
           i.points = 0
           await i.save()
