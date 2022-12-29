@@ -46,7 +46,7 @@ class MxRandomApp(AppConfig):
         await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=True, description='Get current MX Random ranking'))
         self.setting_difficulty = Setting('mxdifficulty', 'MX Difficutly', Setting.CAT_GENERAL, type=str, description='Minimum medal to be reaced', choices=["AUTHOR", "GOLD", "SILVER", "BRONZE"], default="AUTHOR")
         await self.context.setting.register(
-            self.set_difficulty
+            self.setting_difficulty
         )
 
     async def on_stop(self):
