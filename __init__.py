@@ -115,7 +115,7 @@ class MxRandomApp(AppConfig):
             await self.instance.apps.apps['admin'].map.next_map(player, None)
 
     async def on_finish(self, player, race_time, lap_time, cps, flow, raw, **kwargs):
-        difficulty_setting = await self.setting_discord.get_value()
+        difficulty_setting = await self.setting_difficulty.get_value()
         compare_time = self.instance.map_manager.current_map.time_author
         if difficulty_setting == "GOLD":
           compare_time = self.instance.map_manager.current_map.time_gold
@@ -179,6 +179,7 @@ class MxRandomApp(AppConfig):
           dif = data.difficulty
           if dif is None:
             raise Exception()
-          await self.instance.chat(f"$bMX Difficulty has been set to {data.difficulty} by Admin {player.nickname}")
+          await self.setting_difficulty.set_value(dif)
+          await self.instance.chat(f"$bMX Difficulty has been set to {dif} by Admin {player.nickname}")
         except:
           await self.instance.chat(f"$bMX Difficulty is currently set to {data.difficulty}. Call this with /mxdiff <AUTHOR | GOLD | SILVER | BRONZE> to set the difficulty", player)
