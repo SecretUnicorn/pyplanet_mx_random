@@ -41,9 +41,9 @@ class MxRandomApp(AppConfig):
         self.context.signals.listen(mp_signals.map.map_end, self.on_end)
         self.context.signals.listen(mp_signals.map.map_start, self.map_start)
         await self.instance.command_manager.register(Command(command='brokenskip', target=self.brokenskip, admin=True, description='Skip map because it\'s broken'))
-        await self.instance.command_manager.register(Command(command='mxdiff', target=self.set_difficulty, admin=False, description='Set the medal that needs to be reaced').add_param(name="difficulty", required=False, help="AUTHOR|GOLD|SILVER|BRONZE"))
+        await self.instance.command_manager.register(Command(command='mxdiff', target=self.set_difficulty, admin=True, description='Set the medal that needs to be reaced').add_param(name="difficulty", required=False, help="AUTHOR|GOLD|SILVER|BRONZE"))
         await self.instance.command_manager.register(Command(command='mxrhelp', target=self.randhelp, admin=False, description='Get some information about the MX Random plugin'))
-        await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=True, description='Get current MX Random ranking'))
+        await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=False, description='Get current MX Random ranking'))
         self.setting_difficulty = Setting('mxdifficulty', 'MX Difficutly', Setting.CAT_GENERAL, type=str, description='Minimum medal to be reaced', choices=["AUTHOR", "GOLD", "SILVER", "BRONZE"], default="AUTHOR")
         await self.context.setting.register(
             self.setting_difficulty
@@ -127,6 +127,7 @@ class MxRandomApp(AppConfig):
             if race_time <= compare_time:
                 self.isFinished = True
                 self.players_points[player.login] = self.pointsToGive
+                await self.instance.chat(f"$fff{player.nickname}$z$s$fff has beaten this map! Starting countdown")
                 mode_settings = await self.instance.mode_manager.get_settings()
                 try:
                     mode_settings["S_TimeLimit"] = int(
@@ -137,6 +138,7 @@ class MxRandomApp(AppConfig):
         else:
             if race_time <= compare_time:
                 if not player.login in self.players_points:
+                    await self.instance.chat(f"$fff{player.nickname}$z$s$fff snatched some points! GJ")
                     self.pointsToGive /= 2
                     self.players_points[player.login] = self.pointsToGive
 
@@ -182,4 +184,5 @@ class MxRandomApp(AppConfig):
           await self.setting_difficulty.set_value(dif)
           await self.instance.chat(f"$bMX Difficulty has been set to {dif} by Admin {player.nickname}")
         except:
-          await self.instance.chat(f"$bMX Difficulty is currently set to {data.difficulty}. Call this with /mxdiff <AUTHOR | GOLD | SILVER | BRONZE> to set the difficulty", player)
+          dif = await self.setting_difficulty.get_value()
+          await self.instance.chat(f"$bMX Difficulty is currently set to {dif}. Call this with /mxdiff <AUTHOR | GOLD | SILVER | BRONZE> to set the difficulty", player)
