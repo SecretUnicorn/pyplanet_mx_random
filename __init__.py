@@ -30,10 +30,10 @@ class MxRandomApp(AppConfig):
         self.currentMapStartTime = 0
         self.view = MXRButtons(self)
         self.colors = {
-          "AUTHOR": "$s$n$060",
-          "GOLD": "$s$n$ff6",
-          "SILVER": "$s$n$699",
-          "BRONZE": "$s$n$F93"
+          "AUTHOR": "$s$n$o$060",
+          "GOLD": "$s$n$o$ff3",
+          "SILVER": "$s$n$o$699",
+          "BRONZE": "$s$n$o$F93"
         }
 
     async def on_init(self):
@@ -172,7 +172,7 @@ class MxRandomApp(AppConfig):
         await self.instance.mode_manager.update_settings(mode_settings)
         await self.get_next_map()
         dif = await self.setting_difficulty.get_value()
-        await self.instance.chat(f"Random Map Challenge | Current Target: {self.colors[dif]}$s$o{dif}$z May the best win!")
+        await self.instance.chat(f"Random Map Challenge | Current Target: {self.colors[dif]}{dif}$z May the best win!")
         await self.view.display()
 
     async def randhelp(self, player, **kwargs):
@@ -202,7 +202,7 @@ class MxRandomApp(AppConfig):
           if dif is None:
             raise Exception()
           await self.setting_difficulty.set_value(dif)
-          await self.instance.chat(f"$b$603MX Difficulty$z has been set to {self.colors[dif]}$s$o{dif}$z by Admin {player.nickname}")
+          await self.instance.chat(f"$b$603MX Difficulty$z has been set to {self.colors[dif]}{dif}$z by Admin {player.nickname}")
         except:
           dif = await self.setting_difficulty.get_value()
-          await self.instance.chat(f'$b$603MX Difficulty$z is currently set to {self.colors[dif]}$s$o{dif}$z. Call this with /mxdiff <{self.colors["AUTHOR"]}AUTHOR$z | {self.colors["GOLD"]}GOLD$z | {self.colors["SILVER"]}SILVER$z |{self.colors["BRONZE"]} BRONZE>$z to set the difficulty', player)
+          await self.instance.chat(f'$b$603MX Difficulty$z is currently set to {self.colors[dif]}{dif}$z. Call this with /mxdiff <{self.colors["AUTHOR"]}AUTHOR$z | {self.colors["GOLD"]}GOLD$z | {self.colors["SILVER"]}SILVER$z |{self.colors["BRONZE"]} BRONZE>$z to set the difficulty', player)
