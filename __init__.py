@@ -37,9 +37,10 @@ class MxRandomApp(AppConfig):
 		self.context.signals.listen(tm_signals.finish, self.on_finish)
 		self.context.signals.listen(mp_signals.map.map_end, self.on_end)
 		self.context.signals.listen(mp_signals.map.map_start, self.map_start)
-		await self.instance.command_manager.register(Command(command='brokenskip', target=self.brokenskip, admin=True, description='Skip map because it\'s broken'))	
+		await self.instance.command_manager.register(Command(command='brokenskip', target=self.brokenskip, admin=True, description='Skip map because it\'s broken'))
+  	await self.instance.command_manager.register(Command(command='mxdiff', target=self.set_difficulty, admin=False, description='Get current MX Random ranking'))	
 		await self.instance.command_manager.register(Command(command='mxrhelp', target=self.randhelp, admin=False, description='Get some information about the MX Random plugin'))	
-		await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=False, description='Get current MX Random ranking'))	
+		await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=True, description='Set the medal that needs to be reaced').add_param(name="difficulty", required=True, help="AUTHOR|GOLD|SILVER|BRONZE"))	
 
 
 	async def on_stop(self):
@@ -155,3 +156,7 @@ class MxRandomApp(AppConfig):
 		for i in e:
 			t.append((i.login, i.points))
 		return t
+
+
+	async def set_difficulty(self, player, data, **kwargs):
+		await self.instance.chat(f"$bMX Difficulty has been set to {data.difficulty} by Admin {player.nickname}")
