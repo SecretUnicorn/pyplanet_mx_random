@@ -52,9 +52,14 @@ class MxRandomApp(AppConfig):
         await self.instance.command_manager.register(Command(command='mxrhelp', target=self.randhelp, admin=False, description='Get some information about the MX Random plugin'))
         await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=False, description='Get current MX Random ranking'))
         await self.instance.command_manager.register(Command(command='mxresetranks', target=self.resetranks, admin=True, description='Resets all points to zero'))
+        await self.instance.command_manager.register(Command(command='mxtoggle', target=self.resetranks, admin=True, description='Toggles the plugin'))
         self.setting_difficulty = Setting('mxdifficulty', 'MX Difficutly', Setting.CAT_GENERAL, type=str, description='Minimum medal to be reaced', choices=["AUTHOR", "GOLD", "SILVER", "BRONZE"], default="AUTHOR")
         await self.context.setting.register(
             self.setting_difficulty
+        )
+        self.setting_enabled = Setting('mxenabled', 'MX On/Off', Setting.CAT_GENERAL, type=bool, description='Turn Randomizer on or off', default=True)
+        await self.context.setting.register(
+            self.setting_enabled
         )
 
     async def on_stop(self):
@@ -123,6 +128,8 @@ class MxRandomApp(AppConfig):
             await self.instance.apps.apps['admin'].map.next_map(player, None)
 
     async def on_finish(self, player, race_time, lap_time, cps, flow, raw, **kwargs):
+        if not await self.setting_enabled.get_value():
+            return
         difficulty_setting = await self.setting_difficulty.get_value()
         compare_time = self.instance.map_manager.current_map.time_author
         if difficulty_setting == "GOLD":
@@ -153,6 +160,8 @@ class MxRandomApp(AppConfig):
                     self.player_translations[player.login] = player.nickname
 
     async def on_end(self, **kwargs):
+        if not await self.setting_enabled.get_value():
+            return
         for key in self.players_points:
             try:
                 instance = await UserPoints.get(login=key)
@@ -163,6 +172,8 @@ class MxRandomApp(AppConfig):
             await instance.save()
 
     async def map_start(self, **kwargs):
+        if not await self.setting_enabled.get_value():
+            return
         self.currentMapStartTime = datetime.now()
         self.isFinished = False
         self.players_points = dict()
@@ -195,6 +206,12 @@ class MxRandomApp(AppConfig):
           i.points = 0
           await i.save()
         await self.instance.chat(f"$s$oAdmin $00f{player.nickname} $z resetted all points to 0.")
+
+    async def toggle(self, player, data, **kwargs):
+        old_value = await self.setting_enabled.get_value()
+        await self.setting_enabled.set_value(not old_value)
+        await self.instance.chat(f"$s$oAdmin $00f{player.nickname} $z has turned the randomizer {'$F30$oOFF' if old_value else '$0F0$oON'}")
+
 
     async def set_difficulty(self, player, data, **kwargs):
         try:
