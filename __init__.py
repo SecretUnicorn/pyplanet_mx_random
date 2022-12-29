@@ -30,10 +30,10 @@ class MxRandomApp(AppConfig):
         self.currentMapStartTime = 0
         self.view = MXRButtons(self)
         self.colors = {
-          "AUTHOR": "$s$060",
-          "GOLD": "$s$C90",
-          "SILVER": "$s$699",
-          "BRONZE": "$s$F93"
+          "AUTHOR": "$s$n$060",
+          "GOLD": "$s$n$ff6",
+          "SILVER": "$s$n$699",
+          "BRONZE": "$s$n$F93"
         }
 
     async def on_init(self):
@@ -205,4 +205,4 @@ class MxRandomApp(AppConfig):
           await self.instance.chat(f"$b$603MX Difficulty$z has been set to {self.colors[dif]}$s$o{dif}$z by Admin {player.nickname}")
         except:
           dif = await self.setting_difficulty.get_value()
-          await self.instance.chat(f'$b$603MX Difficulty$z is currently set to {self.colors[dif]}$s$o{dif}$z. Call this with /mxdiff $s<{self.colors["AUTHOR"]}AUTHOR$z | {self.colors["GOLD"]}GOLD$z | {self.colors["SILVER"]}SILVER$z |{self.colors["BRONZE"]} BRONZE>$z to set the difficulty', player)
+          await self.instance.chat(f'$b$603MX Difficulty$z is currently set to {self.colors[dif]}$s$o{dif}$z. Call this with /mxdiff <{self.colors["AUTHOR"]}AUTHOR$z | {self.colors["GOLD"]}GOLD$z | {self.colors["SILVER"]}SILVER$z |{self.colors["BRONZE"]} BRONZE>$z to set the difficulty', player)
