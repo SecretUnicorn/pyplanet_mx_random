@@ -24,7 +24,7 @@ class MxRandomApp(AppConfig):
         super().__init__(*args, **kwargs)
         self.api = None
         self.isFinished = False
-        self.pointsToGive = 1.0
+        self.pointsToGive = 12
         self.players_points = dict()
         self.currentMapStartTime = 0
         self.view = MXRButtons(self)
@@ -127,7 +127,7 @@ class MxRandomApp(AppConfig):
             if race_time <= compare_time:
                 self.isFinished = True
                 self.players_points[player.login] = self.pointsToGive
-                await self.instance.chat(f"$fff{player.nickname}$z$s$ff0 has beaten this map! Starting countdown")
+                await self.instance.chat(f"$0F0$s$o{player.nickname}$z$s has beaten this map! $i$F00Starting countdown")
                 mode_settings = await self.instance.mode_manager.get_settings()
                 try:
                     mode_settings["S_TimeLimit"] = int(
@@ -138,7 +138,7 @@ class MxRandomApp(AppConfig):
         else:
             if race_time <= compare_time:
                 if not player.login in self.players_points:
-                    await self.instance.chat(f"$fff{player.nickname}$z$s$ff0 snatched some points! GJ")
+                    await self.instance.chat(f"$f80$s$o{player.nickname}$z$s$ff0 snatched some points! GJ :)")
                     self.pointsToGive /= 2
                     self.players_points[player.login] = self.pointsToGive
 
@@ -155,7 +155,7 @@ class MxRandomApp(AppConfig):
         self.currentMapStartTime = datetime.now()
         self.isFinished = False
         self.players_points = dict()
-        self.pointsToGive = 1.0
+        self.pointsToGive = 12
         mode_settings = await self.instance.mode_manager.get_settings()
         mode_settings["S_TimeLimit"] = -1
         await self.instance.mode_manager.update_settings(mode_settings)
@@ -163,7 +163,7 @@ class MxRandomApp(AppConfig):
         await self.view.display()
 
     async def randhelp(self, player, **kwargs):
-        await self.instance.chat("$bMX Random plugin help$z\nWhen someone in the server gets an author medal on the current map, the remaining drivers have 20 seconds to get one as well\nOnce the time is over, the first finisher with Author Time gets 1 point, the second 0.5, the third 0.25, etc.\nAfterwards, the map gets chosen randomly from mania-exchange.", player)
+        await self.instance.chat("$bMX Random plugin help$z\nWhen someone in the server gets an author medal on the current map, the remaining drivers have 20 seconds to get one as well\nOnce the time is over, the first finisher with Author Time gets 12 point, the second 6, the third 3, etc.\nAfterwards, the map gets chosen randomly from mania-exchange.", player)
 
     async def randrank(self, player, **kwargs):
         v = MXRRanking(self)
