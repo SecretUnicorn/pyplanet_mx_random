@@ -127,7 +127,7 @@ class MxRandomApp(AppConfig):
             if race_time <= compare_time:
                 self.isFinished = True
                 self.players_points[player.login] = self.pointsToGive
-                await self.instance.chat(f"$fff{player.nickname}$z$s$fff has beaten this map! Starting countdown")
+                await self.instance.chat(f"$fff{player.nickname}$z$s$ff0 has beaten this map! Starting countdown")
                 mode_settings = await self.instance.mode_manager.get_settings()
                 try:
                     mode_settings["S_TimeLimit"] = int(
@@ -138,7 +138,7 @@ class MxRandomApp(AppConfig):
         else:
             if race_time <= compare_time:
                 if not player.login in self.players_points:
-                    await self.instance.chat(f"$fff{player.nickname}$z$s$fff snatched some points! GJ")
+                    await self.instance.chat(f"$fff{player.nickname}$z$s$ff0 snatched some points! GJ")
                     self.pointsToGive /= 2
                     self.players_points[player.login] = self.pointsToGive
 
@@ -182,7 +182,7 @@ class MxRandomApp(AppConfig):
           if dif is None:
             raise Exception()
           await self.setting_difficulty.set_value(dif)
-          await self.instance.chat(f"$bMX Difficulty has been set to {dif} by Admin {player.nickname}")
+          await self.instance.chat(f"$b$603MX Difficulty$z has been set to $3F3$s$o{dif}$z by Admin {player.nickname}")
         except:
           dif = await self.setting_difficulty.get_value()
-          await self.instance.chat(f"$bMX Difficulty is currently set to {dif}. Call this with /mxdiff <AUTHOR | GOLD | SILVER | BRONZE> to set the difficulty", player)
+          await self.instance.chat(f"$b$603MX Difficulty$z is currently set to $3F3$s$o{dif}$z. Call this with /mxdiff $s$39F<AUTHOR | GOLD | SILVER | BRONZE>$z to set the difficulty", player)
