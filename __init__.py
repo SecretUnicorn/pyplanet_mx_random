@@ -1,4 +1,5 @@
 from pyplanet.apps.config import AppConfig
+from pyplanet.contrib.setting import Setting
 from pyplanet.contrib.command import Command
 from pyplanet.apps.contrib.mx.api import MXApi
 from pyplanet.apps.core.trackmania import callbacks as tm_signals
@@ -43,6 +44,10 @@ class MxRandomApp(AppConfig):
         await self.instance.command_manager.register(Command(command='mxdiff', target=self.set_difficulty, admin=False, description='Set the medal that needs to be reaced').add_param(name="difficulty", required=False, help="AUTHOR|GOLD|SILVER|BRONZE"))
         await self.instance.command_manager.register(Command(command='mxrhelp', target=self.randhelp, admin=False, description='Get some information about the MX Random plugin'))
         await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=True, description='Get current MX Random ranking'))
+        self.setting_difficulty = Setting('mxdifficulty', 'MX Difficutly', Setting.CAT_GENERAL, type=str, description='Minimum medal to be reaced', choices=["AUTHOR", "GOLD", "SILVER", "BRONZE"], default="AUTHOR")
+        await self.context.setting.register(
+            self.set_difficulty
+        )
 
     async def on_stop(self):
         await super().on_stop()
@@ -110,8 +115,16 @@ class MxRandomApp(AppConfig):
             await self.instance.apps.apps['admin'].map.next_map(player, None)
 
     async def on_finish(self, player, race_time, lap_time, cps, flow, raw, **kwargs):
+        difficulty_setting = await self.setting_discord.get_value()
+        compare_time = self.instance.map_manager.current_map.time_author
+        if difficulty_setting == "GOLD":
+          compare_time = self.instance.map_manager.current_map.time_gold
+        elif difficulty_setting == "SILVER":
+          compare_time = self.instance.map_manager.current_map.time_silver
+        elif difficulty_setting == "BRONZE":
+          compare_time = self.instance.map_manager.current_map.time_bronze
         if not self.isFinished:
-            if race_time <= self.instance.map_manager.current_map.time_author:
+            if race_time <= compare_time:
                 self.isFinished = True
                 self.players_points[player.login] = self.pointsToGive
                 mode_settings = await self.instance.mode_manager.get_settings()
@@ -122,7 +135,7 @@ class MxRandomApp(AppConfig):
                     mode_settings["S_TimeLimit"] = 1
                 await self.instance.mode_manager.update_settings(mode_settings)
         else:
-            if race_time <= self.instance.map_manager.current_map.time_author:
+            if race_time <= compare_time:
                 if not player.login in self.players_points:
                     self.pointsToGive /= 2
                     self.players_points[player.login] = self.pointsToGive
@@ -168,4 +181,4 @@ class MxRandomApp(AppConfig):
             raise Exception()
           await self.instance.chat(f"$bMX Difficulty has been set to {data.difficulty} by Admin {player.nickname}")
         except:
-          await self.instance.chat(f"$bMX Difficulty is currently set to {data.difficulty}", player)
+          await self.instance.chat(f"$bMX Difficulty is currently set to {data.difficulty}. Call this with /mxdiff <AUTHOR | GOLD | SILVER | BRONZE> to set the difficulty", player)
