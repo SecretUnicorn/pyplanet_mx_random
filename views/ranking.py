@@ -13,11 +13,11 @@ class MXRRanking(ManualListView):
     async def get_fields(self):
         fields = [ #maybe change that to formatted name?
             {
-                'name':'Login',
-                'index':'user_login',
+                'name':'Username',
+                'index':'name',
                 'sorting':True,
                 'searching':True,
-                'width': 70,
+                'width': 100,
                 'type': 'label',
             },
             {
@@ -36,7 +36,7 @@ class MXRRanking(ManualListView):
         user_and_points = await self.app.get_all_points()
         for i, j in user_and_points:
             items.append({
-                'user_login':i,
+                'name':i,
                 'user_points':j,
             })
         return items

@@ -183,7 +183,7 @@ class MxRandomApp(AppConfig):
         e = await UserPoints.execute(UserPoints.select().order_by(UserPoints.points.desc()))
         t = []
         for i in e:
-            t.append((i.login, i.points))
+            t.append((i.name, i.points))
         return t
 
     async def set_difficulty(self, player, data, **kwargs):
