@@ -30,10 +30,10 @@ class MxRandomApp(AppConfig):
         self.currentMapStartTime = 0
         self.view = MXRButtons(self)
         self.colors = {
-          "AUTHOR": "$060",
-          "GOLD": "$C90",
-          "SILVER": "$699",
-          "BRONZE": "$F93"
+          "AUTHOR": "$s$060",
+          "GOLD": "$s$C90",
+          "SILVER": "$s$699",
+          "BRONZE": "$s$F93"
         }
 
     async def on_init(self):
