@@ -35,6 +35,7 @@ class MxRandomApp(AppConfig):
           "SILVER": "$s$n$o$699",
           "BRONZE": "$s$n$o$F93"
         }
+        self.difficulty_choices = ["AUTHOR", "GOLD", "SILVER", "BRONZE"]
 
     async def on_init(self):
         await super().on_init()
@@ -52,8 +53,10 @@ class MxRandomApp(AppConfig):
         await self.instance.command_manager.register(Command(command='mxrhelp', target=self.randhelp, admin=False, description='Get some information about the MX Random plugin'))
         await self.instance.command_manager.register(Command(command='mxrrank', target=self.randrank, admin=False, description='Get current MX Random ranking'))
         await self.instance.command_manager.register(Command(command='mxresetranks', target=self.resetranks, admin=True, description='Resets all points to zero'))
-        await self.instance.command_manager.register(Command(command='mxtoggle', target=self.toggle, admin=True, description='Toggles the plugin'))
-        self.setting_difficulty = Setting('mxdifficulty', 'MX Difficutly', Setting.CAT_GENERAL, type=str, description='Minimum medal to be reaced', choices=["AUTHOR", "GOLD", "SILVER", "BRONZE"], default="AUTHOR")
+        await self.instance.command_manager.register(Command(command='mxrtoggle', target=self.toggle, admin=True, description='Toggles the plugin'))
+        await self.instance.command_manager.register(Command(command='mxrdown', target=self.set_difficulty_down, admin=True, description='Decreases the difficulty'))
+        await self.instance.command_manager.register(Command(command='mxrup', target=self.set_difficulty_up, admin=True, description='Increases the difficulty'))
+        self.setting_difficulty = Setting('mxdifficulty', 'MX Difficutly', Setting.CAT_GENERAL, type=str, description='Minimum medal to be reaced', choices=self.difficulty_choices, default="AUTHOR")
         await self.context.setting.register(
             self.setting_difficulty
         )
@@ -223,3 +226,22 @@ class MxRandomApp(AppConfig):
         except:
           dif = await self.setting_difficulty.get_value()
           await self.instance.chat(f'$b$603MX Difficulty$z is currently set to {self.colors[dif]}{dif}$z. Call this with /mxdiff <{self.colors["AUTHOR"]}AUTHOR$z | {self.colors["GOLD"]}GOLD$z | {self.colors["SILVER"]}SILVER$z |{self.colors["BRONZE"]} BRONZE>$z to set the difficulty', player)
+
+    async def set_difficulty_up(self, player, data, **kwargs):
+        current = await self.setting_difficulty.get_value()
+        idx = self.difficulty_choices.index(current)
+        idx -= 1
+        idx = max(idx, 0)
+        new_diff = self.difficulty_choices[idx]
+        await self.setting_difficulty.set_value(new_diff)
+        await self.instance.chat(f"$b$603MX Difficulty$z has been set to {self.colors[new_diff]}{new_diff}$z by Admin {player.nickname}")
+         
+    async def set_difficulty_down(self, player, data, **kwargs):
+        current = await self.setting_difficulty.get_value()
+        idx = self.difficulty_choices.index(current)
+        idx += 1
+        idx = min(idx, 3)
+        new_diff = self.difficulty_choices[idx]
+        await self.setting_difficulty.set_value(new_diff)
+        await self.instance.chat(f"$b$603MX Difficulty$z has been set to {self.colors[new_diff]}{new_diff}$z by Admin {player.nickname}")
+         
